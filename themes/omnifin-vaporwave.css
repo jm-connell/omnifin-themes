@@ -1,0 +1,889 @@
+/*!
+ * Omnifin Vaporwave
+ * Neon on deep purple. Outrun sunsets, scanlines and chromatic fringing for the
+ * Jellyfin web client.
+ *
+ * Theme ID:   omnifin-vaporwave
+ * Version:    1.0.0
+ * Jellyfin:   10.10, 10.11 (verified against 10.11.11), 12.x (bridged)
+ * Author:     omnifin
+ * Source:     https://github.com/omnifin/omnifin-themes
+ * License:    MIT
+ *
+ * Every effect here is pure CSS. Effect intensities are exposed as Skin Manager
+ * variables so anything expensive can be dialled to 0 on weak hardware; see the
+ * "Tuning" table in themes/README.md.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap");
+
+/* ==========================================================================
+   1. Tokens
+   ========================================================================== */
+
+:root {
+    /* Configurable through Skin Manager. Set any intensity to 0 to disable it. */
+    --of-cyan: var(--accent-color, #00ffff);
+    --of-pink: var(--accent-secondary, #ff00aa);
+    --of-glow: var(--glow-strength, 1);
+    --of-scanlines: var(--scanline-opacity, 0.05);
+    --of-grid: var(--grid-opacity, 0.14);
+    --of-drift: calc(var(--background-animation-speed, 24) * 1s);
+
+    /* Surfaces */
+    --of-bg: #120a2e;
+    --of-surface-1: #1a1040;
+    --of-surface-2: #2a1850;
+    --of-surface-3: #35205f;
+
+    /* Text */
+    --of-text: #e0d0ff;
+    --of-text-secondary: rgba(224, 208, 255, 0.55);
+    --of-text-muted: rgba(224, 208, 255, 0.28);
+    --of-text-on-accent: #12002a;
+
+    /* Lines */
+    --of-border: rgba(0, 255, 255, 0.15);
+    --of-border-strong: rgba(0, 255, 255, 0.35);
+
+    /* Neon */
+    --of-glow-cyan: 0 0 12px rgba(0, 255, 255, calc(0.45 * var(--of-glow)));
+    --of-glow-pink: 0 0 12px rgba(255, 0, 170, calc(0.45 * var(--of-glow)));
+    --of-glow-dual:
+        0 0 18px rgba(255, 0, 170, calc(0.22 * var(--of-glow))),
+        0 0 36px rgba(0, 255, 255, calc(0.14 * var(--of-glow)));
+
+    /* Chromatic fringing: the same shadow offset in each direction and colour.
+       This is the cheap CSS stand-in for real channel separation. */
+    --of-fringe:
+        -0.06em 0 0 rgba(255, 0, 170, calc(0.55 * var(--of-glow))),
+        0.06em 0 0 rgba(0, 255, 255, calc(0.55 * var(--of-glow)));
+
+    --of-radius: 0.75em;
+    --of-transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --of-font: "Inter", "Noto Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    --of-font-display: "Poppins", "Inter", sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   1b. Jellyfin 12 bridge (see docs/SELECTORS.md, "Version differences")
+   -------------------------------------------------------------------------- */
+
+:root,
+[data-theme] {
+    --jf-palette-primary-main: var(--of-cyan);
+    --jf-palette-primary-dark: var(--of-pink);
+    --jf-palette-primary-contrastText: var(--of-text-on-accent);
+    --jf-palette-secondary-main: var(--of-pink);
+    --jf-palette-secondary-contrastText: var(--of-text-on-accent);
+    --jf-palette-background-default: var(--of-bg);
+    --jf-palette-background-paper: var(--of-surface-1);
+    --jf-palette-text-primary: var(--of-text);
+    --jf-palette-text-secondary: var(--of-text-secondary);
+    --jf-palette-divider: var(--of-border);
+    --jf-palette-action-hover: rgba(0, 255, 255, 0.1);
+    --jf-palette-action-focus: rgba(255, 0, 170, 0.18);
+    --jf-palette-error-main: #ff3d6e;
+    --jf-palette-error-light: #ff3d6e;
+    --jf-palette-error-contrastText: #ffffff;
+    --jf-palette-common-white: #ffffff;
+    --jf-palette-AppBar-defaultBg: var(--of-surface-1);
+    --jf-palette-AppBar-transparentBg: rgba(18, 10, 46, 0.6);
+    --jf-palette-Button-inheritContainedBg: var(--of-surface-2);
+    --jf-palette-Button-inheritContainedHoverBg: var(--of-surface-3);
+    --jf-palette-FilledInput-bg: rgba(0, 255, 255, 0.05);
+    --jf-palette-FilledInput-borderColor: var(--of-border);
+    --jf-palette-SnackbarContent-bg: var(--of-surface-2);
+    --jf-palette-SnackbarContent-color: var(--of-text);
+    --jf-card-borderRadius: var(--of-radius);
+}
+
+/* ==========================================================================
+   2. Base surfaces and typography
+   ========================================================================== */
+
+/* fonts.noto.scss uses html[lang|="ja"] at specificity (0,1,1). */
+html,
+html[lang] {
+    font-family: var(--of-font);
+}
+
+html,
+.backgroundContainer,
+.dialog,
+.nowPlayingPlaylist,
+.nowPlayingContextMenu,
+.wizardStartForm,
+.ui-corner-all,
+.ui-shadow {
+    background-color: var(--of-bg);
+}
+
+html,
+.skinHeader {
+    color: var(--of-text);
+}
+
+h1,
+h2,
+h3,
+.pageTitle,
+.sectionTitle,
+.itemName,
+.dialogContentTitle,
+.osdTitle,
+.osdTitleSmall {
+    font-family: var(--of-font-display);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* Slow purple-to-magenta drift. .backgroundContainer is a fixed, full-viewport
+   element with `contain: strict`, which makes it cheap to animate. */
+.backgroundContainer {
+    background-image: linear-gradient(135deg, #120a2e 0%, #241250 30%, #3d1352 55%, #1a1040 80%, #120a2e 100%);
+    background-size: 400% 400%;
+    animation: of-drift var(--of-drift) ease-in-out infinite alternate;
+}
+
+@keyframes of-drift {
+    from {
+        background-position: 0% 50%;
+    }
+
+    to {
+        background-position: 100% 50%;
+    }
+}
+
+/* Perspective grid receding to a horizon, drawn behind everything. */
+.backgroundContainer::before {
+    content: "";
+    position: absolute;
+    top: 55%;
+    right: -50%;
+    bottom: -20%;
+    left: -50%;
+    background-image:
+        repeating-linear-gradient(to right, rgba(0, 255, 255, 0.35) 0 1px, transparent 1px 6em),
+        repeating-linear-gradient(to bottom, rgba(255, 0, 170, 0.35) 0 1px, transparent 1px 4em);
+    opacity: var(--of-grid);
+    transform: perspective(24em) rotateX(62deg);
+    transform-origin: center top;
+    pointer-events: none;
+}
+
+/* When artwork is showing, get out of its way and just tint it. */
+.backgroundContainer.withBackdrop {
+    background-image: none;
+    background-color: rgba(18, 10, 46, 0.84);
+    animation: none;
+}
+
+.backgroundContainer.withBackdrop::before {
+    opacity: 0;
+}
+
+/* CRT scanlines over the whole UI. z-index sits above the header (999) and the
+   now playing bar (1201) but below .dialogContainer (999999), so dialogs stay
+   crisp. Hidden during video playback, when body gains .hide-scroll. */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    background-image: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.6) 0 1px, transparent 1px 3px);
+    opacity: var(--of-scanlines);
+    pointer-events: none;
+}
+
+body.hide-scroll::after,
+.layout-tv body::after {
+    display: none;
+}
+
+.cardText-secondary,
+.fieldDescription,
+.guide-programNameCaret,
+.listItem .secondary,
+.nowPlayingBarSecondaryText,
+.programSecondaryTitle,
+.secondaryText,
+.checkboxListLabel,
+.inputLabel,
+.inputLabelUnfocused,
+.paperListLabel,
+.textareaLabelUnfocused {
+    color: var(--of-text-secondary);
+}
+
+/* ==========================================================================
+   3. Header and tabs
+   ========================================================================== */
+
+.skinHeader-withBackground {
+    background-color: rgba(26, 16, 64, 0.92);
+}
+
+/* Stock forces `backdrop-filter: none !important` here. */
+.skinHeader.semiTransparent {
+    background-color: rgba(18, 10, 46, 0.5);
+    backdrop-filter: blur(16px) saturate(1.6) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(1.6) !important;
+}
+
+.skinHeader {
+    border-bottom: 1px solid var(--of-border);
+    box-shadow: 0 1px 0 rgba(255, 0, 170, calc(0.25 * var(--of-glow))), var(--of-glow-dual);
+}
+
+/* TV hardware cannot afford a live blur or a large glow. Stock already clears
+   the transparent header's background there. */
+.layout-tv .skinHeader {
+    box-shadow: none;
+}
+
+.layout-tv .skinHeader.semiTransparent {
+    background: none;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+.emby-tab-button {
+    color: var(--of-text-secondary);
+    transition: color var(--of-transition), text-shadow var(--of-transition);
+}
+
+.emby-tab-button-active {
+    color: var(--of-cyan);
+    text-shadow: var(--of-glow-cyan);
+}
+
+.emby-tab-button:hover,
+.emby-tab-button.show-focus:focus {
+    color: var(--of-pink);
+    text-shadow: var(--of-glow-pink);
+}
+
+.guide-date-tab-button {
+    color: var(--of-text-muted);
+}
+
+.guide-date-tab-button.emby-tab-button-active,
+.guide-date-tab-button:focus {
+    color: var(--of-cyan);
+}
+
+.guide-date-tab-button.show-focus:focus {
+    background-color: var(--of-pink);
+    color: var(--of-text-on-accent);
+}
+
+/* ==========================================================================
+   4. Navigation drawer
+   ========================================================================== */
+
+.mainDrawer,
+.drawer-open {
+    background-color: var(--of-surface-1);
+    border-right: 1px solid var(--of-border);
+}
+
+.navMenuOption {
+    transition: background-color var(--of-transition), color var(--of-transition);
+}
+
+.navMenuOption:hover {
+    background: rgba(0, 255, 255, 0.08);
+    color: var(--of-cyan);
+}
+
+/* Stock: `background: #00a4dc !important` */
+.navMenuOption-selected {
+    background: linear-gradient(90deg, rgba(255, 0, 170, 0.28), rgba(0, 255, 255, 0.12)) !important;
+    color: var(--of-cyan);
+    box-shadow: inset 0.2em 0 0 var(--of-pink);
+    animation: of-pulse 3.2s ease-in-out infinite;
+}
+
+@keyframes of-pulse {
+    0%,
+    100% {
+        box-shadow: inset 0.2em 0 0 var(--of-pink), 0 0 0 rgba(255, 0, 170, 0);
+    }
+
+    50% {
+        box-shadow: inset 0.2em 0 0 var(--of-pink), 0 0 1.2em rgba(255, 0, 170, calc(0.35 * var(--of-glow)));
+    }
+}
+
+/* Stock: `background-color: #f2f2f2 !important` */
+.selectedMediaFolder {
+    background-color: rgba(255, 0, 170, 0.22) !important;
+    color: var(--of-cyan);
+}
+
+.sidebarHeader {
+    color: var(--of-pink);
+    font-family: var(--of-font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78em;
+}
+
+/* ==========================================================================
+   5. Buttons
+   ========================================================================== */
+
+.emby-button {
+    border-radius: var(--of-radius);
+    transition: background var(--of-transition), color var(--of-transition), box-shadow var(--of-transition);
+}
+
+.fab,
+.raised {
+    background: var(--of-surface-2);
+    color: var(--of-text);
+    border: 1px solid var(--of-border);
+}
+
+.fab:hover,
+.fab:focus,
+.raised:hover,
+.raised:focus {
+    background: var(--of-surface-3);
+    border-color: var(--of-border-strong);
+    box-shadow: var(--of-glow-cyan);
+}
+
+.button-submit {
+    background: linear-gradient(135deg, var(--of-pink), var(--of-cyan));
+    color: var(--of-text-on-accent);
+    border: 0;
+    font-weight: 600;
+}
+
+.button-submit:hover,
+.button-submit:focus {
+    color: var(--of-text-on-accent);
+    box-shadow: var(--of-glow-dual);
+}
+
+.button-delete {
+    background: #ff3d6e;
+    color: #ffffff;
+}
+
+.button-flat:hover,
+.button-link {
+    color: var(--of-cyan);
+}
+
+.emby-button.show-focus:focus {
+    background: var(--of-pink);
+    color: var(--of-text-on-accent);
+    box-shadow: var(--of-glow-pink);
+}
+
+.emby-button.detailFloatingButton {
+    background: linear-gradient(135deg, var(--of-pink), var(--of-cyan));
+    color: var(--of-text-on-accent);
+    box-shadow: var(--of-glow-dual);
+}
+
+.layout-tv .emby-button.detailFloatingButton:focus {
+    background: var(--of-cyan);
+    color: var(--of-text-on-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .paper-icon-button-light:hover:not(:disabled) {
+        color: var(--of-cyan);
+        background-color: rgba(0, 255, 255, 0.12);
+    }
+}
+
+.paper-icon-button-light:active:not(:disabled) {
+    color: var(--of-pink);
+    background-color: rgba(255, 0, 170, 0.14);
+}
+
+.paper-icon-button-light.show-focus:focus {
+    color: var(--of-cyan);
+}
+
+/* Stock: `color: #00a4dc !important` */
+.buttonActive {
+    color: var(--of-pink) !important;
+}
+
+.progressring-spiner {
+    border-color: var(--of-cyan);
+}
+
+.metadataSidebarIcon {
+    color: var(--of-cyan);
+}
+
+/* ==========================================================================
+   6. Form controls
+   ========================================================================== */
+
+.emby-input,
+.emby-textarea {
+    color: var(--of-text);
+    background: rgba(0, 255, 255, 0.05);
+    border: 0.12em solid var(--of-border);
+    border-radius: var(--of-radius);
+    transition: border-color var(--of-transition), box-shadow var(--of-transition);
+}
+
+.emby-input:focus,
+.emby-textarea:focus {
+    border-color: var(--of-cyan);
+    box-shadow: var(--of-glow-cyan);
+}
+
+.emby-select-withcolor {
+    color: var(--of-text);
+    background: rgba(0, 255, 255, 0.05);
+    border: 0.07em solid var(--of-border);
+    border-radius: var(--of-radius);
+}
+
+.emby-select-withcolor > option {
+    color: var(--of-text);
+    background: var(--of-surface-1);
+}
+
+/* Stock uses !important on both. */
+.emby-select-withcolor:focus {
+    border-color: var(--of-cyan) !important;
+}
+
+.emby-select-tv-withcolor:focus {
+    background-color: var(--of-pink) !important;
+    color: var(--of-text-on-accent) !important;
+}
+
+.inputLabelFocused,
+.selectLabelFocused,
+.textareaLabelFocused {
+    color: var(--of-cyan);
+}
+
+.emby-checkbox:checked + span + .checkboxOutline {
+    border-color: var(--of-cyan);
+    background-color: var(--of-cyan);
+}
+
+.emby-checkbox:focus + span + .checkboxOutline {
+    border-color: var(--of-pink);
+}
+
+.emby-checkbox:focus:not(:checked) + span + .checkboxOutline {
+    border-color: var(--of-cyan);
+}
+
+.emby-collapsible-button {
+    border-color: var(--of-border);
+}
+
+.alphaPickerButton {
+    color: var(--of-text-muted);
+    background-color: transparent;
+}
+
+.alphaPickerButton-selected {
+    color: var(--of-cyan);
+    text-shadow: var(--of-glow-cyan);
+}
+
+/* Stock: `color: #fff !important` */
+.alphaPickerButton-tv:focus {
+    background-color: var(--of-pink);
+    color: var(--of-text-on-accent) !important;
+}
+
+/* ==========================================================================
+   7. Cards and library grid
+   ========================================================================== */
+
+.cardImageContainer,
+.cardContent,
+.cardOverlayContainer,
+.blurhash-canvas,
+.chapterCardImageContainer,
+.textCardImageContainer,
+.visualCardBox {
+    border-radius: var(--of-radius);
+}
+
+.cardImageContainer,
+.textCardImageContainer {
+    background-color: var(--of-surface-2);
+}
+
+.visualCardBox,
+.collapseContent,
+.paperList,
+.formDialogFooter:not(.formDialogFooter-clear),
+.formDialogHeader:not(.formDialogHeader-clear) {
+    background-color: var(--of-surface-1);
+}
+
+/* Posters get a thin neon rim and offset pink/cyan drop shadows for depth. */
+.cardImageContainer,
+.cardContent {
+    box-shadow:
+        0 0 0 1px var(--of-border),
+        0.15em 0.15em 0 rgba(255, 0, 170, calc(0.18 * var(--of-glow))),
+        -0.15em -0.15em 0 rgba(0, 255, 255, calc(0.14 * var(--of-glow)));
+}
+
+.defaultCardBackground1 {
+    background-color: #2a1850;
+}
+
+.defaultCardBackground2 {
+    background-color: #3d1352;
+}
+
+.defaultCardBackground3 {
+    background-color: #1a1040;
+}
+
+.defaultCardBackground4 {
+    background-color: #241250;
+}
+
+.defaultCardBackground5 {
+    background-color: #331a5c;
+}
+
+/* Stock focus ring uses !important. This is the only focus affordance on TV. */
+.card:focus .cardBox.visualCardBox,
+.card:focus .cardBox:not(.visualCardBox) .cardScalable {
+    border-color: var(--of-cyan) !important;
+}
+
+/* Specificity (0,3,0) stays below `.card.show-animation:focus > .cardBox`
+   (0,4,0) so TV focus scaling still wins. */
+@media (hover: hover) and (pointer: fine) {
+    .layout-desktop .card .cardBox {
+        transition: transform var(--of-transition), box-shadow var(--of-transition);
+    }
+
+    .layout-desktop .card:hover .cardBox {
+        transform: translateY(-0.35em);
+    }
+
+    .layout-desktop .card:hover .cardImageContainer,
+    .layout-desktop .card:hover .cardContent {
+        box-shadow:
+            0 0 0 1px var(--of-border-strong),
+            0.2em 0.2em 0 rgba(255, 0, 170, calc(0.45 * var(--of-glow))),
+            -0.2em -0.2em 0 rgba(0, 255, 255, calc(0.35 * var(--of-glow))),
+            var(--of-glow-dual);
+    }
+}
+
+.sectionTitle {
+    color: var(--of-text);
+    text-shadow: var(--of-fringe);
+}
+
+.itemSelectionPanel {
+    border: 1px solid var(--of-cyan);
+}
+
+.selectionCommandsPanel {
+    background: linear-gradient(90deg, var(--of-pink), var(--of-cyan));
+    color: var(--of-text-on-accent);
+}
+
+/* ==========================================================================
+   8. Indicators and progress
+   ========================================================================== */
+
+.itemProgressBar {
+    background: rgba(224, 208, 255, 0.16);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.itemProgressBarForeground {
+    background: linear-gradient(90deg, var(--of-pink), var(--of-cyan));
+    box-shadow: var(--of-glow-pink);
+}
+
+.itemProgressBarForeground-recording {
+    background: #ff3d6e;
+}
+
+.countIndicator,
+.fullSyncIndicator,
+.mediaSourceIndicator,
+.playedIndicator {
+    background: var(--of-pink);
+    color: var(--of-text-on-accent);
+    box-shadow: var(--of-glow-pink);
+}
+
+.ratingbutton-icon-withrating,
+.playstatebutton-icon-played {
+    color: var(--of-pink);
+}
+
+.downloadbutton-icon-complete,
+.downloadbutton-icon-on {
+    color: var(--of-cyan);
+}
+
+/* ==========================================================================
+   9. Detail pages
+   ========================================================================== */
+
+.detailRibbon {
+    background: rgba(26, 16, 64, 0.8);
+}
+
+.layout-tv .detailRibbon {
+    background: none;
+}
+
+.noBackdropTransparency .detailPagePrimaryContainer,
+.noBackdropTransparency .detailPageSecondaryContainer {
+    background-color: var(--of-bg);
+}
+
+.itemBackdrop::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background:
+        linear-gradient(to bottom, rgba(18, 10, 46, 0.15) 0%, rgba(18, 10, 46, 0.5) 55%, var(--of-bg) 100%),
+        linear-gradient(90deg, rgba(255, 0, 170, 0.14), transparent 45%, rgba(0, 255, 255, 0.14));
+    pointer-events: none;
+}
+
+/* Stock places this at the bottom of the backdrop; keep it above the gradient. */
+.itemBackdropProgressBar {
+    z-index: 1;
+}
+
+.itemName {
+    text-shadow: var(--of-fringe);
+}
+
+.mediaInfoText {
+    color: var(--of-text);
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid var(--of-border);
+    border-radius: 0.25em;
+}
+
+.detailTableBodyRow-shaded:nth-child(even) {
+    background: rgba(0, 255, 255, 0.04);
+}
+
+.detailSectionContent a {
+    color: var(--of-cyan);
+}
+
+/* ==========================================================================
+   10. Lists, dialogs, sheets, toasts
+   ========================================================================== */
+
+.listItem {
+    transition: background-color var(--of-transition);
+}
+
+.listItem:hover {
+    background: rgba(0, 255, 255, 0.07);
+}
+
+.listItem:focus {
+    background: rgba(255, 0, 170, 0.16);
+}
+
+/* Stock uses !important. */
+.listItem-border {
+    border-color: var(--of-border) !important;
+}
+
+.actionsheetDivider {
+    background: var(--of-border);
+}
+
+.actionSheet,
+.dialog {
+    border-radius: var(--of-radius);
+    border: 1px solid var(--of-border);
+    box-shadow: var(--of-glow-dual);
+}
+
+.toast {
+    background: var(--of-surface-2);
+    color: var(--of-text);
+    border: 1px solid var(--of-border);
+    border-radius: var(--of-radius);
+    box-shadow: var(--of-glow-dual);
+}
+
+.infoBanner {
+    color: var(--of-text);
+    background: var(--of-surface-1);
+    border: 1px solid var(--of-border);
+    border-radius: var(--of-radius);
+}
+
+.upNextDialog-countdownText {
+    color: var(--of-cyan);
+    text-shadow: var(--of-glow-cyan);
+}
+
+/* ==========================================================================
+   11. Player OSD and now playing bar
+   ========================================================================== */
+
+.appfooter,
+.playlistSectionButton {
+    background: var(--of-surface-1);
+    color: var(--of-text);
+    border-top: 1px solid var(--of-border);
+}
+
+.videoOsdBottom {
+    background: linear-gradient(to top, rgba(18, 10, 46, 0.95) 0%, rgba(18, 10, 46, 0.6) 55%, transparent 100%);
+}
+
+.osdTimeText {
+    color: var(--of-cyan);
+}
+
+/* ==========================================================================
+   12. Live TV guide
+   ========================================================================== */
+
+.channelPrograms,
+.guide-channelHeaderCell,
+.programCell {
+    border-color: var(--of-border);
+}
+
+/* All of these are !important in stock. */
+.programCell-active {
+    background: var(--of-surface-2) !important;
+}
+
+.programCell-sports {
+    background: #1f3d63 !important;
+}
+
+.programCell-movie {
+    background: #451a6b !important;
+}
+
+.programCell-kids {
+    background: #0f4a63 !important;
+}
+
+.programCell-news {
+    background: #1b4a45 !important;
+}
+
+.guide-channelHeaderCell:focus,
+.programCell:focus {
+    background-color: var(--of-pink) !important;
+    color: var(--of-text-on-accent) !important;
+}
+
+.guide-programTextIcon {
+    color: var(--of-bg);
+    background: var(--of-text-muted);
+}
+
+/* ==========================================================================
+   13. Scrollbars
+   ========================================================================== */
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 255, 255, 0.4) transparent;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+    box-shadow: none;
+}
+
+::-webkit-scrollbar-thumb:horizontal,
+::-webkit-scrollbar-thumb:vertical {
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--of-pink), var(--of-cyan));
+}
+
+/* ==========================================================================
+   14. Book, comic and PDF readers
+   ========================================================================== */
+
+#comicsPlayer,
+#bookPlayer,
+#pdfPlayer,
+#dialogToc {
+    background: var(--of-bg);
+}
+
+#comicsPlayer .swiper-pagination {
+    background: var(--of-bg);
+    color: var(--of-text);
+}
+
+#bookPlayer .topButtons,
+#comicsPlayer .actionButtonIcon,
+#pdfPlayer .actionButtonIcon {
+    color: var(--of-text);
+}
+
+#dialogToc .bookplayerButtonIcon,
+#dialogToc .toc li a:link {
+    color: var(--of-text-secondary);
+}
+
+#dialogToc .bookplayerButtonIcon:hover,
+#dialogToc .toc li a:active,
+#dialogToc .toc li a:hover {
+    color: var(--of-cyan);
+}
+
+/* ==========================================================================
+   15. Reduced motion
+
+   Drop everything that moves on its own. Colour and glow stay.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .backgroundContainer,
+    .navMenuOption-selected {
+        animation: none;
+    }
+
+    .layout-desktop .card:hover .cardBox {
+        transform: none;
+    }
+
+    .emby-button,
+    .listItem,
+    .navMenuOption,
+    .emby-tab-button {
+        transition: none;
+    }
+}

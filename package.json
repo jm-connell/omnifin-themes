@@ -1,0 +1,19 @@
+{
+  "name": "omnifin-themes",
+  "version": "0.1.0",
+  "description": "Pure-CSS themes for the Jellyfin web client, installable via the Skin Manager plugin or Dashboard Custom CSS.",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "lint": "stylelint \"themes/**/*.css\"",
+    "lint:fix": "stylelint --fix \"themes/**/*.css\"",
+    "validate": "node scripts/validate-skins.mjs",
+    "verify": "bash scripts/verify-selectors.sh",
+    "check": "npm run lint && npm run validate && npm run verify",
+    "reference:sync": "bash scripts/sync-reference.sh"
+  },
+  "devDependencies": {
+    "stylelint": "^16.10.0",
+    "stylelint-config-standard": "^36.0.1"
+  }
+}

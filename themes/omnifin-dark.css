@@ -1,0 +1,812 @@
+/*!
+ * Omnifin Dark
+ * A refined, neutral dark theme for the Jellyfin web client.
+ *
+ * Theme ID:   omnifin-dark
+ * Version:    1.0.0
+ * Jellyfin:   10.10, 10.11 (verified against 10.11.11), 12.x (bridged)
+ * Author:     omnifin
+ * Source:     https://github.com/omnifin/omnifin-themes
+ * License:    MIT
+ *
+ * Install: see README.md. Works via the Skin Manager plugin or by pasting into
+ * Dashboard > General > Custom CSS.
+ *
+ * Every selector below exists in the stock client. See docs/SELECTORS.md for the
+ * verified selector reference and docs/AUTHORING.md for the rules this file follows.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+/* ==========================================================================
+   1. Tokens
+
+   Values wrapped in var(--name, fallback) are user-configurable through the
+   Skin Manager settings page. The fallback is what everyone else sees, so it
+   must always be a complete, valid value.
+   ========================================================================== */
+
+:root {
+    /* Configurable */
+    --of-accent: var(--accent-color, #00a4dc);
+    --of-radius: var(--corner-radius, 0.5em);
+    --of-scale: var(--ui-scale, 1);
+
+    /* Surfaces, darkest to lightest */
+    --of-bg: #0d0d0f;
+    --of-surface-1: #16161a;
+    --of-surface-2: #1e1e24;
+    --of-surface-3: #26262e;
+
+    /* Text */
+    --of-text: rgba(255, 255, 255, 0.92);
+    --of-text-secondary: rgba(255, 255, 255, 0.58);
+    --of-text-muted: rgba(255, 255, 255, 0.38);
+    --of-text-on-accent: #ffffff;
+
+    /* Lines */
+    --of-border: rgba(255, 255, 255, 0.08);
+
+    /* Accent derivatives. Each is declared twice on purpose: the plain rgba()
+       line is the fallback for engines without color-mix() (older Tizen and
+       WebOS webviews), which drop the second declaration as invalid. On those
+       devices the derivatives stay Jellyfin blue even if the accent is
+       recoloured, which is the intended graceful degradation. */
+    /* stylelint-disable declaration-block-no-duplicate-custom-properties */
+    --of-accent-soft: rgba(0, 164, 220, 0.18);
+    --of-accent-soft: color-mix(in srgb, var(--of-accent) 18%, transparent);
+    --of-accent-bright: #33b6e3;
+    --of-accent-bright: color-mix(in srgb, var(--of-accent) 82%, #ffffff);
+    /* stylelint-enable declaration-block-no-duplicate-custom-properties */
+
+    /* Status */
+    --of-danger: #e5484d;
+
+    /* Depth */
+    --of-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    --of-shadow-strong: 0 12px 40px rgba(0, 0, 0, 0.6);
+
+    /* Motion */
+    --of-transition: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Type */
+    --of-font: "Inter", "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* --------------------------------------------------------------------------
+   1b. Jellyfin 12 bridge
+
+   10.11 and earlier hardcode every colour, so the rules further down do the
+   real work. Jellyfin 12 moved to MUI custom properties; setting them here
+   keeps unstyled or newly added 12.x surfaces on-palette instead of falling
+   back to stock blue.
+   -------------------------------------------------------------------------- */
+
+:root,
+[data-theme] {
+    --jf-palette-primary-main: var(--of-accent);
+    --jf-palette-primary-dark: var(--of-accent);
+    --jf-palette-primary-contrastText: var(--of-text-on-accent);
+    --jf-palette-secondary-main: var(--of-accent);
+    --jf-palette-secondary-contrastText: var(--of-text-on-accent);
+    --jf-palette-background-default: var(--of-bg);
+    --jf-palette-background-paper: var(--of-surface-1);
+    --jf-palette-text-primary: var(--of-text);
+    --jf-palette-text-secondary: var(--of-text-secondary);
+    --jf-palette-divider: var(--of-border);
+    --jf-palette-action-hover: rgba(255, 255, 255, 0.06);
+    --jf-palette-action-focus: rgba(255, 255, 255, 0.12);
+    --jf-palette-error-main: var(--of-danger);
+    --jf-palette-error-light: var(--of-danger);
+    --jf-palette-error-contrastText: #ffffff;
+    --jf-palette-common-white: #ffffff;
+    --jf-palette-AppBar-defaultBg: var(--of-surface-1);
+    --jf-palette-AppBar-transparentBg: rgba(13, 13, 15, 0.55);
+    --jf-palette-Button-inheritContainedBg: var(--of-surface-2);
+    --jf-palette-Button-inheritContainedHoverBg: var(--of-surface-3);
+    --jf-palette-FilledInput-bg: var(--of-surface-2);
+    --jf-palette-FilledInput-borderColor: var(--of-border);
+    --jf-palette-SnackbarContent-bg: var(--of-surface-3);
+    --jf-palette-SnackbarContent-color: var(--of-text);
+    --jf-card-borderRadius: var(--of-radius);
+}
+
+/* ==========================================================================
+   2. Base surfaces and typography
+   ========================================================================== */
+
+/* html[lang|="ja"] and friends in fonts.noto.scss have specificity (0,1,1),
+   so plain `html` is not enough to change the font. */
+html,
+html[lang] {
+    font-family: var(--of-font);
+}
+
+/* Stock sets 93% here, 125% on .layout-tv and 90% on .layout-mobile. The whole
+   UI is sized in em, so these three values are the UI scale. */
+html {
+    font-size: calc(93% * var(--of-scale));
+}
+
+.layout-tv {
+    font-size: calc(125% * var(--of-scale));
+}
+
+.layout-mobile {
+    font-size: calc(90% * var(--of-scale));
+}
+
+/* body is `background-color: transparent !important` in site.scss; the page
+   background lives on html and .backgroundContainer. */
+html,
+.backgroundContainer,
+.dialog,
+.nowPlayingPlaylist,
+.nowPlayingContextMenu,
+.wizardStartForm,
+.ui-corner-all,
+.ui-shadow {
+    background-color: var(--of-bg);
+}
+
+html,
+.skinHeader {
+    color: var(--of-text);
+}
+
+/* Dimming layer over library backdrops. Lower the alpha for more visible art. */
+.backgroundContainer.withBackdrop {
+    background-color: rgba(13, 13, 15, 0.82);
+}
+
+.cardText-secondary,
+.fieldDescription,
+.guide-programNameCaret,
+.listItem .secondary,
+.nowPlayingBarSecondaryText,
+.programSecondaryTitle,
+.secondaryText {
+    color: var(--of-text-secondary);
+}
+
+.checkboxListLabel,
+.inputLabel,
+.inputLabelUnfocused,
+.paperListLabel,
+.textareaLabelUnfocused {
+    color: var(--of-text-secondary);
+}
+
+/* ==========================================================================
+   3. Header and tabs
+   ========================================================================== */
+
+.skinHeader-withBackground {
+    background-color: var(--of-surface-1);
+}
+
+/* Stock forces `backdrop-filter: none !important` on the transparent header,
+   so the blur can only be restored with !important. */
+.skinHeader.semiTransparent {
+    background-color: rgba(13, 13, 15, 0.55);
+    backdrop-filter: blur(20px) saturate(1.4) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(1.4) !important;
+    border-bottom: 1px solid var(--of-border);
+}
+
+/* TV boxes are too weak for a live blur, and stock already clears the
+   background there. */
+.layout-tv .skinHeader.semiTransparent {
+    background: none;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-bottom: 0;
+}
+
+.emby-tab-button {
+    color: var(--of-text-secondary);
+    transition: color var(--of-transition);
+}
+
+.emby-tab-button-active {
+    color: var(--of-text);
+}
+
+.emby-tab-button:hover,
+.emby-tab-button.show-focus:focus {
+    color: var(--of-accent);
+}
+
+.guide-date-tab-button {
+    color: var(--of-text-muted);
+}
+
+.guide-date-tab-button.emby-tab-button-active,
+.guide-date-tab-button:focus {
+    color: var(--of-accent);
+}
+
+.guide-date-tab-button.show-focus:focus {
+    background-color: var(--of-accent);
+    color: var(--of-text-on-accent);
+}
+
+/* ==========================================================================
+   4. Navigation drawer
+   ========================================================================== */
+
+.mainDrawer,
+.drawer-open {
+    background-color: var(--of-surface-1);
+}
+
+.navMenuOption {
+    transition: background-color var(--of-transition);
+}
+
+.navMenuOption:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+/* Stock: `background: #00a4dc !important` */
+.navMenuOption-selected {
+    background: var(--of-accent-soft) !important;
+    color: var(--of-accent);
+}
+
+/* Stock: `background-color: #f2f2f2 !important` in librarybrowser.scss */
+.selectedMediaFolder {
+    background-color: var(--of-accent-soft) !important;
+    color: var(--of-accent);
+}
+
+.sidebarHeader {
+    color: var(--of-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.82em;
+}
+
+/* ==========================================================================
+   5. Buttons
+   ========================================================================== */
+
+.emby-button {
+    border-radius: var(--of-radius);
+    transition: background-color var(--of-transition), color var(--of-transition);
+}
+
+.fab,
+.raised {
+    background: var(--of-surface-2);
+    color: var(--of-text);
+}
+
+.fab:focus,
+.fab:hover,
+.raised:focus,
+.raised:hover {
+    background: var(--of-surface-3);
+}
+
+.button-submit {
+    background: var(--of-accent);
+    color: var(--of-text-on-accent);
+}
+
+.button-submit:focus,
+.button-submit:hover {
+    background: var(--of-accent-bright);
+    color: var(--of-text-on-accent);
+}
+
+.button-delete {
+    background: var(--of-danger);
+    color: #ffffff;
+}
+
+.button-flat:hover,
+.button-link {
+    color: var(--of-accent);
+}
+
+.emby-button.show-focus:focus {
+    background: var(--of-accent);
+    color: var(--of-text-on-accent);
+}
+
+.emby-button.detailFloatingButton {
+    background-color: var(--of-accent);
+    color: var(--of-text-on-accent);
+}
+
+.layout-tv .emby-button.detailFloatingButton:focus {
+    background-color: var(--of-text);
+    color: var(--of-accent);
+}
+
+/* Stock scopes the icon-button hover to a hover-capable pointer; keep that. */
+@media (hover: hover) and (pointer: fine) {
+    .paper-icon-button-light:hover:not(:disabled) {
+        color: var(--of-accent);
+        background-color: var(--of-accent-soft);
+    }
+}
+
+.paper-icon-button-light:active:not(:disabled) {
+    color: var(--of-accent);
+    background-color: var(--of-accent-soft);
+}
+
+.paper-icon-button-light.show-focus:focus {
+    color: var(--of-accent);
+}
+
+/* Stock: `color: #00a4dc !important` */
+.buttonActive {
+    color: var(--of-accent) !important;
+}
+
+.progressring-spiner {
+    border-color: var(--of-accent);
+}
+
+.metadataSidebarIcon {
+    color: var(--of-accent);
+}
+
+/* ==========================================================================
+   6. Form controls
+   ========================================================================== */
+
+.emby-input,
+.emby-textarea {
+    color: var(--of-text);
+    background: var(--of-surface-2);
+    border: 0.16em solid var(--of-border);
+    border-radius: var(--of-radius);
+    transition: border-color var(--of-transition);
+}
+
+.emby-input:focus,
+.emby-textarea:focus {
+    border-color: var(--of-accent);
+}
+
+.emby-select-withcolor {
+    color: var(--of-text);
+    background: var(--of-surface-2);
+    border: 0.07em solid var(--of-border);
+    border-radius: var(--of-radius);
+}
+
+.emby-select-withcolor > option {
+    color: var(--of-text);
+    background: var(--of-surface-2);
+}
+
+/* Stock uses !important on both of these. */
+.emby-select-withcolor:focus {
+    border-color: var(--of-accent) !important;
+}
+
+.emby-select-tv-withcolor:focus {
+    background-color: var(--of-accent) !important;
+    color: var(--of-text-on-accent) !important;
+}
+
+.inputLabelFocused,
+.selectLabelFocused,
+.textareaLabelFocused {
+    color: var(--of-accent);
+}
+
+.emby-checkbox:checked + span + .checkboxOutline {
+    border-color: var(--of-accent);
+    background-color: var(--of-accent);
+}
+
+.emby-checkbox:focus + span + .checkboxOutline {
+    border-color: var(--of-text);
+}
+
+.emby-checkbox:focus:not(:checked) + span + .checkboxOutline {
+    border-color: var(--of-accent);
+}
+
+.emby-collapsible-button {
+    border-color: var(--of-border);
+}
+
+.alphaPickerButton {
+    color: var(--of-text-muted);
+    background-color: transparent;
+    transition: color var(--of-transition);
+}
+
+.alphaPickerButton-selected {
+    color: var(--of-accent);
+}
+
+/* Stock: `color: #fff !important` */
+.alphaPickerButton-tv:focus {
+    background-color: var(--of-accent);
+    color: var(--of-text-on-accent) !important;
+}
+
+/* ==========================================================================
+   7. Cards and library grid
+   ========================================================================== */
+
+.cardImageContainer,
+.cardContent,
+.cardOverlayContainer,
+.blurhash-canvas,
+.chapterCardImageContainer,
+.textCardImageContainer,
+.visualCardBox {
+    border-radius: var(--of-radius);
+}
+
+.cardImageContainer,
+.textCardImageContainer {
+    background-color: var(--of-surface-2);
+}
+
+.chapterCardImageContainer {
+    background-color: #000000;
+}
+
+.visualCardBox,
+.collapseContent,
+.paperList,
+.formDialogFooter:not(.formDialogFooter-clear),
+.formDialogHeader:not(.formDialogHeader-clear) {
+    background-color: var(--of-surface-1);
+}
+
+/* Placeholder tiles for items with no artwork. */
+.defaultCardBackground1 {
+    background-color: #1b2a33;
+}
+
+.defaultCardBackground2 {
+    background-color: #24323b;
+}
+
+.defaultCardBackground3 {
+    background-color: #1f2b36;
+}
+
+.defaultCardBackground4 {
+    background-color: #202c30;
+}
+
+.defaultCardBackground5 {
+    background-color: #1a252d;
+}
+
+/* Stock focus ring uses !important on the border colour.
+   Do not remove this: it is the only focus affordance on TV. */
+.card:focus .cardBox.visualCardBox,
+.card:focus .cardBox:not(.visualCardBox) .cardScalable {
+    border-color: var(--of-accent) !important;
+}
+
+/* Desktop pointer hover lift. Specificity (0,3,0) intentionally sits below
+   `.card.show-animation:focus > .cardBox` (0,4,0) so TV focus scaling wins. */
+@media (hover: hover) and (pointer: fine) {
+    .layout-desktop .card .cardBox {
+        transition: transform var(--of-transition), box-shadow var(--of-transition);
+    }
+
+    .layout-desktop .card:hover .cardBox {
+        transform: translateY(-0.25em);
+    }
+
+    .layout-desktop .card:hover .cardImageContainer,
+    .layout-desktop .card:hover .cardContent {
+        box-shadow: var(--of-shadow);
+    }
+}
+
+.sectionTitle {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.itemSelectionPanel {
+    border: 1px solid var(--of-accent);
+}
+
+.selectionCommandsPanel {
+    background: var(--of-accent);
+    color: var(--of-text-on-accent);
+}
+
+/* ==========================================================================
+   8. Indicators and progress
+   ========================================================================== */
+
+.itemProgressBar {
+    background: rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.itemProgressBarForeground {
+    background-color: var(--of-accent);
+}
+
+.itemProgressBarForeground-recording {
+    background-color: var(--of-danger);
+}
+
+.countIndicator,
+.fullSyncIndicator,
+.mediaSourceIndicator,
+.playedIndicator {
+    background: var(--of-accent);
+    color: var(--of-text-on-accent);
+}
+
+.fullSyncIndicator {
+    color: var(--of-text-on-accent);
+}
+
+.ratingbutton-icon-withrating,
+.playstatebutton-icon-played {
+    color: var(--of-danger);
+}
+
+.downloadbutton-icon-complete,
+.downloadbutton-icon-on {
+    color: var(--of-accent);
+}
+
+/* ==========================================================================
+   9. Detail pages
+   ========================================================================== */
+
+.detailRibbon {
+    background: rgba(22, 22, 26, 0.8);
+}
+
+.layout-tv .detailRibbon {
+    background: none;
+}
+
+.noBackdropTransparency .detailPagePrimaryContainer,
+.noBackdropTransparency .detailPageSecondaryContainer {
+    background-color: var(--of-bg);
+}
+
+/* Fade the hero backdrop into the page instead of cutting it off. */
+.itemBackdrop::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(to bottom, rgba(13, 13, 15, 0.1) 0%, rgba(13, 13, 15, 0.35) 55%, var(--of-bg) 100%);
+    pointer-events: none;
+}
+
+/* Keep the resume bar above the gradient added above. */
+.itemBackdropProgressBar {
+    z-index: 1;
+}
+
+.itemName {
+    font-weight: 600;
+    letter-spacing: -0.015em;
+}
+
+.mediaInfoText {
+    color: var(--of-text);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--of-border);
+    border-radius: 0.25em;
+}
+
+.detailTableBodyRow-shaded:nth-child(even) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.detailSectionContent a {
+    color: var(--of-accent);
+}
+
+/* ==========================================================================
+   10. Lists, dialogs, sheets, toasts
+   ========================================================================== */
+
+.listItem {
+    transition: background-color var(--of-transition);
+}
+
+.listItem:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.listItem:focus {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Stock uses !important. */
+.listItem-border {
+    border-color: var(--of-border) !important;
+}
+
+.actionsheetDivider {
+    background: var(--of-border);
+}
+
+.actionSheet,
+.dialog {
+    border-radius: var(--of-radius);
+    box-shadow: var(--of-shadow-strong);
+}
+
+.toast {
+    background: var(--of-surface-3);
+    color: var(--of-text);
+    border-radius: var(--of-radius);
+    box-shadow: var(--of-shadow);
+}
+
+.infoBanner {
+    color: var(--of-text);
+    background: var(--of-surface-2);
+    border: 1px solid var(--of-border);
+    border-radius: var(--of-radius);
+}
+
+.upNextDialog-countdownText {
+    color: var(--of-accent);
+}
+
+/* ==========================================================================
+   11. Player OSD and now playing bar
+   ========================================================================== */
+
+.appfooter,
+.playlistSectionButton {
+    background: var(--of-surface-1);
+    color: var(--of-text);
+    border-top: 1px solid var(--of-border);
+}
+
+.videoOsdBottom {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.55) 55%, transparent 100%);
+}
+
+.osdTitle,
+.osdTitleSmall {
+    font-weight: 600;
+}
+
+.osdTimeText {
+    color: var(--of-text-secondary);
+}
+
+/* ==========================================================================
+   12. Live TV guide
+   ========================================================================== */
+
+.channelPrograms,
+.guide-channelHeaderCell,
+.programCell {
+    border-color: var(--of-border);
+}
+
+/* All of these are !important in stock. */
+.programCell-active {
+    background: var(--of-surface-2) !important;
+}
+
+.programCell-sports {
+    background: #2d3a63 !important;
+}
+
+.programCell-movie {
+    background: #3a2d63 !important;
+}
+
+.programCell-kids {
+    background: #1f4a63 !important;
+}
+
+.programCell-news {
+    background: #234a35 !important;
+}
+
+.guide-channelHeaderCell:focus,
+.programCell:focus {
+    background-color: var(--of-accent) !important;
+    color: var(--of-text-on-accent) !important;
+}
+
+.guide-programTextIcon {
+    color: var(--of-bg);
+    background: var(--of-text-muted);
+}
+
+/* ==========================================================================
+   13. Scrollbars
+   ========================================================================== */
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: none;
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb:horizontal,
+::-webkit-scrollbar-thumb:vertical {
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.22);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.35);
+}
+
+/* ==========================================================================
+   14. Book, comic and PDF readers
+   ========================================================================== */
+
+#comicsPlayer,
+#bookPlayer,
+#pdfPlayer,
+#dialogToc {
+    background: var(--of-bg);
+}
+
+#comicsPlayer .swiper-pagination {
+    background: var(--of-bg);
+    color: var(--of-text);
+}
+
+#bookPlayer .topButtons,
+#comicsPlayer .actionButtonIcon,
+#pdfPlayer .actionButtonIcon {
+    color: var(--of-text);
+}
+
+#dialogToc .bookplayerButtonIcon,
+#dialogToc .toc li a:link {
+    color: var(--of-text-secondary);
+}
+
+#dialogToc .bookplayerButtonIcon:hover,
+#dialogToc .toc li a:active,
+#dialogToc .toc li a:hover {
+    color: var(--of-accent);
+}
+
+/* ==========================================================================
+   15. Reduced motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .layout-desktop .card:hover .cardBox {
+        transform: none;
+    }
+
+    .emby-button,
+    .listItem,
+    .navMenuOption,
+    .emby-tab-button {
+        transition: none;
+    }
+}

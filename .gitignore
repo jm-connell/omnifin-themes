@@ -1,0 +1,7 @@
+# Local read-only checkouts of jellyfin-web used for selector verification.
+# Recreate with: npm run reference:sync
+.reference/
+
+node_modules/
+*.log
+.DS_Store

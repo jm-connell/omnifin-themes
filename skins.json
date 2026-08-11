@@ -1,0 +1,93 @@
+[
+  {
+    "name": "Omnifin Dark",
+    "author": "omnifin",
+    "description": "A refined, neutral dark theme. Near-black surfaces, soft elevation, rounded posters and a configurable accent colour.",
+    "version": "1.0.0",
+    "jellyfin": "10.10+",
+    "tags": ["dark", "minimal", "modern", "mobile-friendly", "tv"],
+    "previewUrl": "https://cdn.jsdelivr.net/gh/OWNER/omnifin-themes@main/previews/omnifin-dark.png",
+    "sourceUrl": "https://github.com/OWNER/omnifin-themes",
+    "cssUrl": "https://cdn.jsdelivr.net/gh/OWNER/omnifin-themes@main/themes/omnifin-dark.css",
+    "preconnect": ["https://fonts.googleapis.com", "https://fonts.gstatic.com"],
+    "vars": [
+      {
+        "key": "accentColor",
+        "name": "Accent Colour",
+        "description": "Highlight colour for buttons, focus rings, progress bars and the selected library.",
+        "type": "color",
+        "default": "#00a4dc"
+      },
+      {
+        "key": "cornerRadius",
+        "name": "Corner Radius",
+        "description": "Rounding on posters, cards, buttons and dialogs. Use CSS units, e.g. 0.5em or 0px for square corners.",
+        "type": "text",
+        "default": "0.5em"
+      },
+      {
+        "key": "uiScale",
+        "name": "UI Scale",
+        "description": "Multiplier for the whole interface. 1 is stock size, 1.15 is noticeably larger, 0.9 is denser.",
+        "type": "number",
+        "default": "1"
+      }
+    ]
+  },
+  {
+    "name": "Omnifin Vaporwave",
+    "author": "omnifin",
+    "description": "Neon on deep purple. Drifting sunset gradient, CRT scanlines, a perspective grid horizon and chromatic fringing on titles.",
+    "version": "1.0.0",
+    "jellyfin": "10.10+",
+    "tags": ["dark", "colorful", "animations", "modern"],
+    "previewUrl": "https://cdn.jsdelivr.net/gh/OWNER/omnifin-themes@main/previews/omnifin-vaporwave.png",
+    "sourceUrl": "https://github.com/OWNER/omnifin-themes",
+    "cssUrl": "https://cdn.jsdelivr.net/gh/OWNER/omnifin-themes@main/themes/omnifin-vaporwave.css",
+    "preconnect": ["https://fonts.googleapis.com", "https://fonts.gstatic.com"],
+    "vars": [
+      {
+        "key": "accentColor",
+        "name": "Primary Neon",
+        "description": "The cyan half of the palette. Used for focus, links and active tabs.",
+        "type": "color",
+        "default": "#00ffff"
+      },
+      {
+        "key": "accentSecondary",
+        "name": "Secondary Neon",
+        "description": "The hot pink half of the palette. Used for the selected library, gradients and glow.",
+        "type": "color",
+        "default": "#ff00aa"
+      },
+      {
+        "key": "glowStrength",
+        "name": "Glow Strength",
+        "description": "Intensity of every neon glow and chromatic fringe. 0 turns them all off, 1 is default, 2 is loud.",
+        "type": "number",
+        "default": "1"
+      },
+      {
+        "key": "scanlineOpacity",
+        "name": "Scanline Opacity",
+        "description": "Opacity of the CRT scanline overlay. 0 disables it.",
+        "type": "number",
+        "default": "0.05"
+      },
+      {
+        "key": "gridOpacity",
+        "name": "Grid Opacity",
+        "description": "Opacity of the perspective grid horizon on the background. 0 disables it.",
+        "type": "number",
+        "default": "0.14"
+      },
+      {
+        "key": "backgroundAnimationSpeed",
+        "name": "Background Drift (seconds)",
+        "description": "How long one sweep of the background gradient takes. Higher is slower and cheaper.",
+        "type": "number",
+        "default": "24"
+      }
+    ]
+  }
+]
