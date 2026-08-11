@@ -17,10 +17,6 @@ Verified against Jellyfin **10.11.11**, compatible back to 10.10 and forward to
 More concepts are designed but not yet built; see
 [`docs/THEME-BACKLOG.md`](docs/THEME-BACKLOG.md).
 
-> Replace `OWNER` in the URLs below with the GitHub account hosting this repo.
-> The same placeholder appears in `skins.json` and must be updated before
-> publishing.
-
 ## Install
 
 ### Option 1: Skin Manager plugin
@@ -55,18 +51,18 @@ whenever this repo does.
 refresh:
 
 ```css
-@import url("https://cdn.jsdelivr.net/gh/OWNER/omnifin-themes@main/themes/omnifin-dark.css");
+@import url("https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/themes/omnifin-dark.css");
 ```
 
 ```css
-@import url("https://cdn.jsdelivr.net/gh/OWNER/omnifin-themes@main/themes/omnifin-vaporwave.css");
+@import url("https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/themes/omnifin-vaporwave.css");
 ```
 
 `@import` must be the first thing in the box. Anything you add below it overrides
 the theme, which is the intended way to customise:
 
 ```css
-@import url("https://cdn.jsdelivr.net/gh/OWNER/omnifin-themes@main/themes/omnifin-dark.css");
+@import url("https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/themes/omnifin-dark.css");
 
 :root {
     --accent-color: #f2b01e;

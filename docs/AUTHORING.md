@@ -49,7 +49,7 @@ other, which is how you spot a surface one theme covers and another forgot.
  * Version:    1.0.0
  * Jellyfin:   10.10, 10.11 (verified against 10.11.11), 12.x (bridged)
  * Author:     <author>
- * Source:     https://github.com/OWNER/omnifin-themes
+ * Source:     https://github.com/jm-connell/omnifin-themes
  * License:    MIT
  */
 
@@ -141,7 +141,7 @@ Reserve `boolean` vars for `@sm-import-if` addon sheets, which are the only real
 conditional the plugin offers:
 
 ```css
-/* @sm-import-if mediaBarSupport https://cdn.jsdelivr.net/gh/OWNER/omnifin-themes@main/themes/addons/media-bar.css */
+/* @sm-import-if mediaBarSupport https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/themes/addons/media-bar.css */
 ```
 
 `npm run validate` cross-checks the manifest against the stylesheet in both

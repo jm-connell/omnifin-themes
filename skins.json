@@ -6,9 +6,9 @@
     "version": "1.0.0",
     "jellyfin": "10.10+",
     "tags": ["dark", "minimal", "modern", "mobile-friendly", "tv"],
-    "previewUrl": "https://cdn.jsdelivr.net/gh/OWNER/omnifin-themes@main/previews/omnifin-dark.png",
-    "sourceUrl": "https://github.com/OWNER/omnifin-themes",
-    "cssUrl": "https://cdn.jsdelivr.net/gh/OWNER/omnifin-themes@main/themes/omnifin-dark.css",
+    "previewUrl": "https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/previews/omnifin-dark.png",
+    "sourceUrl": "https://github.com/jm-connell/omnifin-themes",
+    "cssUrl": "https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/themes/omnifin-dark.css",
     "preconnect": ["https://fonts.googleapis.com", "https://fonts.gstatic.com"],
     "vars": [
       {
@@ -41,9 +41,9 @@
     "version": "1.0.0",
     "jellyfin": "10.10+",
     "tags": ["dark", "colorful", "animations", "modern"],
-    "previewUrl": "https://cdn.jsdelivr.net/gh/OWNER/omnifin-themes@main/previews/omnifin-vaporwave.png",
-    "sourceUrl": "https://github.com/OWNER/omnifin-themes",
-    "cssUrl": "https://cdn.jsdelivr.net/gh/OWNER/omnifin-themes@main/themes/omnifin-vaporwave.css",
+    "previewUrl": "https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/previews/omnifin-vaporwave.png",
+    "sourceUrl": "https://github.com/jm-connell/omnifin-themes",
+    "cssUrl": "https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/themes/omnifin-vaporwave.css",
     "preconnect": ["https://fonts.googleapis.com", "https://fonts.gstatic.com"],
     "vars": [
       {
