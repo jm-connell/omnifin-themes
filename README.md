@@ -9,10 +9,28 @@ Verified against Jellyfin **10.11.11**, compatible back to 10.10 and forward to
 
 ## Themes
 
-| Theme | Description | Tuning | File |
-|---|---|---|---|
-| **Omnifin Dark** | Refined neutral dark. Near-black surfaces, soft elevation, rounded posters, configurable accent. | accent, corner radius, UI scale | [`themes/omnifin-dark.css`](themes/omnifin-dark.css) |
-| **Omnifin Vaporwave** | Neon on deep purple. Drifting sunset gradient, CRT scanlines, perspective grid horizon, chromatic fringing on titles. | two neons, glow, scanlines, grid, drift speed | [`themes/omnifin-vaporwave.css`](themes/omnifin-vaporwave.css) |
+Paste one of these into **Dashboard > General > Custom CSS Code**, then Save and
+hard-refresh (`Ctrl+Shift+R`). `@import` must be the first line in the box.
+
+### Omnifin Dark
+
+Refined neutral dark. Near-black surfaces, soft elevation, rounded posters,
+configurable accent. Tuning: accent, corner radius, UI scale.
+[`themes/omnifin-dark.css`](themes/omnifin-dark.css)
+
+```css
+@import url("https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/themes/omnifin-dark.css");
+```
+
+### Omnifin Vaporwave
+
+Neon on deep purple. Drifting sunset gradient, CRT scanlines, perspective grid
+horizon, chromatic fringing on titles. Tuning: two neons, glow, scanlines, grid,
+drift speed. [`themes/omnifin-vaporwave.css`](themes/omnifin-vaporwave.css)
+
+```css
+@import url("https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/themes/omnifin-vaporwave.css");
+```
 
 More concepts are designed but not yet built; see
 [`docs/THEME-BACKLOG.md`](docs/THEME-BACKLOG.md).
@@ -38,28 +56,18 @@ Skin Manager loads its catalogue from a curated community list. To get these
 themes into that list, submit them using the Theme Submission issue template at
 [Jellyfin-PG/Skin-Manager-Themes](https://github.com/Jellyfin-PG/Skin-Manager-Themes);
 [`skins.json`](skins.json) in this repo is already in the required format. Until
-then, or if you would rather not publish, use Option 2.
+then, or if you would rather not publish, use the `@import` lines under
+[Themes](#themes) above.
 
 Requires Jellyfin 10.11 or newer.
 
 ### Option 2: Custom CSS import
 
-Works on every Jellyfin version with no plugins. One line, and the theme updates
-whenever this repo does.
+Works on every Jellyfin version with no plugins. Copy the `@import` line for the
+theme you want from [Themes](#themes), paste it into **Dashboard > General >
+Custom CSS Code**, Save, and refresh.
 
-**Dashboard > General > Custom CSS Code**, paste one of these, then Save and
-refresh:
-
-```css
-@import url("https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/themes/omnifin-dark.css");
-```
-
-```css
-@import url("https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/themes/omnifin-vaporwave.css");
-```
-
-`@import` must be the first thing in the box. Anything you add below it overrides
-the theme, which is the intended way to customise:
+Anything you add below the `@import` overrides the theme:
 
 ```css
 @import url("https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/themes/omnifin-dark.css");
@@ -108,7 +116,7 @@ CSS below the `@import`.
 | Property | Default | What it does |
 |---|---|---|
 | `--accent-color` | `#00a4dc` | Buttons, focus rings, progress bars, selected library |
-| `--corner-radius` | `0.5em` | Rounding on posters, cards, buttons, dialogs. `0px` for square |
+| `--corner-radius` | `0.75em` | Rounding on posters, cards, buttons, dialogs. `0px` for square |
 | `--ui-scale` | `1` | Scales the whole interface. `1.15` larger, `0.9` denser |
 
 **Omnifin Vaporwave**

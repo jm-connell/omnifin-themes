@@ -2,8 +2,8 @@
   {
     "name": "Omnifin Dark",
     "author": "omnifin",
-    "description": "A refined, neutral dark theme. Near-black surfaces, soft elevation, rounded posters and a configurable accent colour.",
-    "version": "1.0.0",
+    "description": "A refined, neutral dark theme. Readable charcoal surfaces, soft elevation, Manrope typography, rounded posters and a configurable accent colour.",
+    "version": "1.2.1",
     "jellyfin": "10.10+",
     "tags": ["dark", "minimal", "modern", "mobile-friendly", "tv"],
     "previewUrl": "https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/previews/omnifin-dark.png",
@@ -21,9 +21,9 @@
       {
         "key": "cornerRadius",
         "name": "Corner Radius",
-        "description": "Rounding on posters, cards, buttons and dialogs. Use CSS units, e.g. 0.5em or 0px for square corners.",
+        "description": "Rounding on posters, cards, buttons and dialogs. Use CSS units, e.g. 0.75em or 0px for square corners.",
         "type": "text",
-        "default": "0.5em"
+        "default": "0.75em"
       },
       {
         "key": "uiScale",

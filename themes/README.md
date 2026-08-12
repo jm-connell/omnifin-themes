@@ -10,23 +10,29 @@ Implementation notes for each theme. For installation, see the
 A neutral, low-chroma dark theme meant to be the everyday default. Nothing in it
 competes with poster artwork.
 
-**Design intent.** Four surface steps from `#0d0d0f` to `#26262e` carry all
-elevation, so panels read as layers rather than as outlined boxes. Text uses
-three opacity tiers instead of three greys, which keeps contrast correct if the
-background is changed. The accent appears only on interactive and stateful
-elements.
+**Design intent.** Four charcoal surface steps from `#141418` to `#303038` carry
+elevation so panels read as layers rather than outlined boxes. Primary text is
+near-white (`#f5f5f7`); secondary stays at ~78% opacity so metadata remains
+readable. The accent appears only on interactive and stateful elements.
 
-**Beyond recolouring.** Posters get the corner radius from `--corner-radius`, the
-translucent header gets a real backdrop blur (stock explicitly disables it),
-desktop cards lift on hover, detail-page hero art fades into the page, and
-scrollbars become thin unobtrusive overlays.
+**Typography.** Manrope for UI and titles (one geometric family). Header tabs
+are sized up (~1.15em) with an accent underline on the active tab. Text colours
+are forced through stock `color: inherit !important` on cards and section
+titles so the theme stays readable even when Jellyfin’s built-in Light theme
+is selected.
+
+**Beyond recolouring.** Posters round via `.cardPadder` (stock's visible shape),
+not only `.cardImageContainer`. The translucent header gets a real backdrop blur
+(stock disables it). Desktop hover deepens the card shadow without translating
+`.cardBox` (that fights stock TV focus scale). Detail-page hero art fades into
+the page; scrollbars are thin overlays.
 
 **Tuning**
 
 | Property | Default | Notes |
 |---|---|---|
 | `--accent-color` | `#00a4dc` | Derivatives are computed with `color-mix()`. Engines without it keep the default blue derivatives. |
-| `--corner-radius` | `0.5em` | `0px` gives a squared-off look. `em` units scale with `--ui-scale`. |
+| `--corner-radius` | `0.75em` | `0px` gives a squared-off look. `em` units scale with `--ui-scale`. |
 | `--ui-scale` | `1` | Multiplies `html`, `.layout-tv` and `.layout-mobile` font sizes together, so Jellyfin's 20px TV floor is preserved. |
 
 ---
