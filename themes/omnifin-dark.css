@@ -4,7 +4,7 @@
  * soft elevation, visibly rounded posters and a configurable accent.
  *
  * Theme ID:   omnifin-dark
- * Version:    1.3.0
+ * Version:    1.3.18
  * Jellyfin:   10.10, 10.11 (verified against 10.11.11), 12.x (bridged)
  * Author:     omnifin
  * Source:     https://github.com/jm-connell/omnifin-themes
@@ -37,7 +37,7 @@ html {
     --of-surface-1: #101117;
     --of-surface-2: #16171f;
     --of-surface-3: #1e2028;
-
+ 
     /* High-contrast text. Secondary stays above ~4.5:1 on --of-bg. */
     --of-text: #f5f5f7;
     --of-text-secondary: rgba(245, 245, 247, 0.78);
@@ -244,6 +244,15 @@ h3,
 
 .backgroundContainer.withBackdrop {
     background-color: rgba(8, 9, 12, 0.82);
+}
+
+/*
+ * `.backgroundContainer` is a sibling of the page, not a child, so this
+ * is the only way to dim the details backdrop without also lightening
+ * Home. Old webviews ignore `:has()` and keep the 0.82 scrim above.
+ */
+html:has(.itemDetailPage:not(.hide)) .backgroundContainer.withBackdrop {
+    background-color: rgba(8, 9, 12, 0.4);
 }
 
 /* ==========================================================================
@@ -679,6 +688,7 @@ h3,
 /* Stock uses !important on both. */
 .emby-select-withcolor:focus {
     border-color: var(--of-accent, #58e0fb) !important;
+    box-shadow: 0 0 0 0.12em var(--of-accent-ring, rgba(88, 224, 251, 0.45));
 }
 
 .emby-select-tv-withcolor:focus {
@@ -884,7 +894,6 @@ h3,
 @media (hover: hover) and (pointer: fine) {
     .layout-desktop .card {
         position: relative;
-        z-index: 0;
     }
 
     .layout-desktop .card .cardScalable,
@@ -970,11 +979,21 @@ h3,
    ========================================================================== */
 
 .detailRibbon {
-    background: rgba(16, 17, 23, 0.78);
+    background: rgba(16, 17, 23, 0.32);
+    backdrop-filter: blur(8px) saturate(1.1);
+    -webkit-backdrop-filter: blur(8px) saturate(1.1);
+}
+
+/* Stock: poster z-index 3, ribbon z-index 2. A blanket `.card { z-index: 0 }`
+   (even as a rest state for hover lift) lets the ribbon paint over the poster. */
+.layout-desktop .detailImageContainer .card {
+    z-index: 3;
 }
 
 .layout-tv .detailRibbon {
     background: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
 .noBackdropTransparency .detailPagePrimaryContainer,
@@ -982,14 +1001,17 @@ h3,
     background-color: var(--of-bg, #08090c);
 }
 
-.itemBackdrop::after {
+.itemBackdrop::after,
+.layout-desktop .itemBackdrop::after,
+.layout-mobile .itemBackdrop::after {
     content: "";
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    background: linear-gradient(to bottom, rgba(8, 9, 12, 0.1) 0%, rgba(8, 9, 12, 0.5) 55%, var(--of-bg, #08090c) 100%);
+    /* Fade into the page scrim; do not go opaque or the banner reads as a dark band. */
+    background: linear-gradient(to bottom, transparent 0%, rgba(8, 9, 12, 0.28) 100%);
     pointer-events: none;
 }
 
@@ -1011,6 +1033,178 @@ h3,
 
 .detailSectionContent a {
     color: var(--of-accent, #58e0fb);
+}
+
+.trackSelections .selectContainer {
+    align-items: center;
+}
+
+/*
+ * Stock sets padding: 0 on .detailTrackSelect, so long codec strings run
+ * under the chevron. Poster-scale radius on that short control reads as a pill.
+ */
+.trackSelections .selectContainer .detailTrackSelect {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: var(--of-surface-3, #1e2028);
+    border: 0.07em solid var(--of-border, rgba(255, 255, 255, 0.1));
+    /* stylelint-disable-next-line declaration-block-no-duplicate-properties -- min() dropped on old TV webviews */
+    border-radius: 0.4em;
+    border-radius: min(0.4em, var(--of-radius, 0.75em));
+    transition: border-color var(--of-transition, 180ms ease), box-shadow var(--of-transition, 180ms ease);
+    padding: 0.45em 2.1em 0.45em 0.8em;
+}
+
+[dir="rtl"] .trackSelections .selectContainer .detailTrackSelect {
+    padding: 0.45em 0.8em 0.45em 2.1em;
+}
+
+.trackSelections .selectContainer .selectArrowContainer {
+    top: 50%;
+    bottom: auto;
+    right: 0.4em;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    color: var(--of-text-muted, rgba(245, 245, 247, 0.5));
+}
+
+[dir="rtl"] .trackSelections .selectContainer .selectArrowContainer {
+    right: auto;
+    left: 0.4em;
+}
+
+.trackSelections .selectContainer .selectArrowContainer .selectArrow {
+    margin-top: 0;
+    font-size: 1.25em;
+}
+
+/*
+ * Stock hides `.emby-select[disabled] + .selectArrowContainer`. The
+ * `display: flex` above is more specific, so restore that hide and drop
+ * the chevron gutter when there is nothing to pick.
+ */
+.trackSelections .selectContainer .emby-select[disabled] + .selectArrowContainer {
+    display: none;
+}
+
+.trackSelections .selectContainer .detailTrackSelect[disabled] {
+    padding-right: 0.8em;
+}
+
+[dir="rtl"] .trackSelections .selectContainer .detailTrackSelect[disabled] {
+    padding-left: 0.8em;
+    padding-right: 0.8em;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .trackSelections .selectContainer .detailTrackSelect:hover {
+        border-color: var(--of-border-strong, rgba(255, 255, 255, 0.2));
+    }
+}
+
+/*
+ * Tags render as one `.itemTags` node (`Tags: {0}` in itemDetails/index.js)
+ * and crowd the overview. Hidden on purpose.
+ */
+.itemTags {
+    display: none;
+}
+
+/*
+ * Cap the synopsis column on wide viewports so lines stay readable.
+ * Chips share that column on the last line: a 0-height flex item so
+ * they do not add a row.
+ */
+.detailSectionContent {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 52em;
+}
+
+/* Leftover empty <p>; genres render in `.genresGroup` instead. */
+.detailSectionContent > .itemGenres:empty {
+    display: none;
+}
+
+/*
+ * Tagline is an h3. Flex children do not collapse margins, so stock
+ * heading + overview margins stack into a large empty band.
+ */
+.detailSectionContent > .tagline:not(.hide) {
+    margin: 0.2em 0 0.25em;
+    font-size: 1.05em;
+    line-height: 1.35;
+}
+
+.detailSectionContent > .overview:not(.hide) {
+    order: 1;
+    margin: 0.15em 0 0.5em;
+}
+
+.detailSectionContent > .itemExternalLinks:not(.hide) {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    align-self: flex-end;
+    order: 1;
+    height: 0;
+    overflow: visible;
+    position: relative;
+    top: -1.4em;
+    z-index: 1;
+    gap: 0.35em;
+    /* Inline `margin: 0.7em 0; font-size: 92%` on the node. */
+    margin: 0 !important;
+    font-size: 0 !important;
+}
+
+.detailSectionContent > .overview-controls,
+.detailSectionContent > .itemTags,
+.detailSectionContent > .seriesRecordingEditor,
+.detailSectionContent > #itemBirthday,
+.detailSectionContent > #itemBirthLocation,
+.detailSectionContent > #itemDeathDate,
+.detailSectionContent > #seriesAirTime {
+    order: 2;
+}
+
+.detailSectionContent > .overview-controls:not(:has(.overview-expand:not(.hide))) {
+    display: none;
+}
+
+.detailSectionContent > #itemBirthday:empty,
+.detailSectionContent > #itemBirthLocation:empty,
+.detailSectionContent > #itemDeathDate:empty,
+.detailSectionContent > #seriesAirTime:empty {
+    display: none;
+}
+
+[dir="rtl"] .detailSectionContent > .itemExternalLinks:not(.hide) {
+    align-self: flex-start;
+}
+
+.itemExternalLinks a {
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    padding: 0.22em 0.55em;
+    color: var(--of-accent, #58e0fb);
+    background: var(--of-accent-softer, rgba(88, 224, 251, 0.1));
+    border: 1px solid var(--of-border, rgba(255, 255, 255, 0.1));
+    border-radius: 0.35em;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .itemExternalLinks a:hover {
+        border-color: var(--of-border-strong, rgba(255, 255, 255, 0.2));
+        color: var(--of-text, #f5f5f7);
+    }
 }
 
 /* ==========================================================================
@@ -1083,6 +1277,88 @@ h3,
 
 .osdTimeText {
     color: var(--of-accent, #58e0fb);
+}
+
+/* Stock hardcodes #00a4dc on the input, thumbs, filled track, and watched ticks. */
+.mdl-slider {
+    color: var(--of-accent, #58e0fb);
+    accent-color: var(--of-accent, #58e0fb);
+}
+
+.mdl-slider-background-lower {
+    background-color: var(--of-accent, #58e0fb);
+}
+
+/* Pseudo-elements cannot share a rule across engines. */
+.mdl-slider::-webkit-slider-thumb {
+    background: var(--of-accent, #58e0fb);
+}
+
+.mdl-slider::-moz-range-thumb {
+    background: var(--of-accent, #58e0fb);
+}
+
+.mdl-slider::-ms-thumb {
+    background: var(--of-accent, #58e0fb);
+}
+
+.sliderMarker.watched {
+    background-color: var(--of-accent, #58e0fb);
+}
+
+/* Stock SyncPlay pulse uses rgba(0, 164, 220, …). Own keyframes so we do not clobber a global `pulse`. */
+.syncPlayIconCircle.oneShotPulse {
+    animation: of-syncplay-pulse 1.5s 1;
+}
+
+.syncPlayIconCircle.infinitePulse {
+    animation: of-syncplay-infinite-pulse 1.5s infinite;
+}
+
+@keyframes of-syncplay-pulse {
+    0% {
+        transform: scale(0.95);
+        color: rgba(88, 224, 251, 0.7);
+        background: rgba(88, 224, 251, 0.3);
+        box-shadow: 0 0 0 0 rgba(88, 224, 251, 0.3);
+    }
+
+    70% {
+        transform: scale(1);
+        color: rgba(88, 224, 251, 0);
+        background: rgba(88, 224, 251, 0);
+        box-shadow: 0 0 0 60px rgba(88, 224, 251, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        color: rgba(88, 224, 251, 0);
+        background: rgba(88, 224, 251, 0);
+        box-shadow: 0 0 0 0 rgba(88, 224, 251, 0);
+    }
+}
+
+@keyframes of-syncplay-infinite-pulse {
+    0% {
+        transform: scale(0.95);
+        color: rgba(88, 224, 251, 0.7);
+        background: rgba(88, 224, 251, 0.3);
+        box-shadow: 0 0 0 0 rgba(88, 224, 251, 0.3);
+    }
+
+    70% {
+        transform: scale(1);
+        color: rgba(88, 224, 251, 0.6);
+        background: rgba(88, 224, 251, 0);
+        box-shadow: 0 0 0 60px rgba(88, 224, 251, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        color: rgba(88, 224, 251, 0.7);
+        background: rgba(88, 224, 251, 0.3);
+        box-shadow: 0 0 0 0 rgba(88, 224, 251, 0.3);
+    }
 }
 
 /* ==========================================================================
@@ -1192,6 +1468,7 @@ h3,
     .emby-tab-button,
     .emby-input,
     .emby-textarea,
+    .trackSelections .selectContainer .detailTrackSelect,
     .cardBox:not(.visualCardBox) .cardPadder,
     .visualCardBox,
     .cardScalable,
@@ -1208,5 +1485,10 @@ h3,
     .cardOverlayContainer > .cardOverlayFab-primary:hover,
     .cardOverlayButton-centered:hover {
         transform: none;
+    }
+
+    .syncPlayIconCircle.oneShotPulse,
+    .syncPlayIconCircle.infinitePulse {
+        animation: none;
     }
 }

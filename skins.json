@@ -3,7 +3,7 @@
     "name": "Omnifin Dark",
     "author": "omnifin",
     "description": "A refined, near-black theme. Oxanium type, ice-cyan accent, rounded posters and a configurable highlight colour.",
-    "version": "1.3.0",
+    "version": "1.3.18",
     "jellyfin": "10.10+",
     "tags": ["dark", "minimal", "modern", "mobile-friendly", "tv"],
     "previewUrl": "https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/previews/omnifin-dark.png",

@@ -262,8 +262,9 @@ scoping so touch devices do not get stuck in a hover state:
 | `.selectLabelFocused`, `.textareaLabelFocused` | Focused labels | `themes/dark/theme.scss` |
 | `.checkboxListLabel`, `.paperListLabel`, `.fieldDescription` | Secondary form text | `themes/dark/theme.scss` |
 | `.emby-collapsible-button` | Collapsible section header | `themes/dark/theme.scss` |
-| `.mdl-slider` | All sliders (volume, seek, settings) | `elements/emby-slider/emby-slider.scss` |
-| `.mdl-slider-background-lower`, `.mdl-slider-background-upper` | Filled and unfilled slider track | `elements/emby-slider/emby-slider.scss` |
+| `.mdl-slider` | All sliders (volume, seek, settings). Stock hardcodes `#00a4dc` on `color` and thumbs | `elements/emby-slider/emby-slider.scss` |
+| `.mdl-slider-background-lower`, `.mdl-slider-background-upper` | Filled and unfilled slider track. Lower is `#00a4dc` in stock | `elements/emby-slider/emby-slider.scss` |
+| `.sliderMarker`, `.sliderMarker.watched` | Chapter ticks on the seek bar. Watched is `#00a4dc` in stock | `elements/emby-slider/emby-slider.scss` |
 | `.alphaPickerButton`, `-selected`, `-tv:focus` | A-Z jump list | `themes/dark/theme.scss` |
 
 ## Detail pages
@@ -282,8 +283,11 @@ scoping so touch devices do not get stuck in a hover state:
 | `.itemMiscInfo`, `.mediaInfoItem`, `.mediaInfoText` | Year / rating / runtime chips | `styles/librarybrowser.scss`, `components/mediainfo/mediainfo.scss`, `themes/dark/theme.scss` |
 | `.mainDetailButtons`, `.detailButton`, `.detailButton-content\|-icon\|-text` | Action row | `styles/librarybrowser.scss` |
 | `.trackSelections`, `.detailSectionContent`, `.detailVerticalSection` | Track pickers and content sections | `styles/librarybrowser.scss` |
+| `.detailTrackSelect` | Audio / subtitle / version `<select>` on the detail page. Stock sets `padding: 0` | `styles/librarybrowser.scss` |
+| `.selectContainer`, `.selectLabel`, `.selectArrowContainer`, `.selectArrow` | Select layout, label, and chevron | `elements/emby-select/emby-select.scss` |
 | `.detailTableBodyRow-shaded:nth-child(even)` | Zebra striping in episode tables | `themes/dark/theme.scss` |
-| `.itemOverview`, `.itemTag`, `.itemLinks` | Synopsis, tags, external links | `styles/librarybrowser.scss` |
+| `.itemOverview`, `.itemTag`, `.itemLinks` | Synopsis, tags | `styles/librarybrowser.scss` |
+| `.itemExternalLinks` | IMDb / TMDb / website `<a>` list, after the overview | `controllers/itemDetails/index.js` |
 
 ## Lists, dialogs, sheets, toasts
 
@@ -313,6 +317,7 @@ scoping so touch devices do not get stuck in a hover state:
 | `.osdTextContainer`, `.osdMainTextContainer`, `.osdTitle`, `.osdTitleSmall` | Title block | `styles/videoosd.scss` |
 | `.osdMediaInfo`, `.osdSecondaryMediaInfo`, `.osdTimeText`, `.osdMediaStatus` | Metadata and timecode | `styles/videoosd.scss` |
 | `.osdVolumeSliderContainer`, `.volumeButtons` | Volume cluster | `styles/videoosd.scss` |
+| `.syncPlayIconCircle`, `.oneShotPulse`, `.infinitePulse` | SyncPlay overlay pulse. Stock keyframes use `rgba(0, 164, 220, …)` | `styles/videoosd.scss` |
 | `.chapterThumb`, `.chapterThumbContainer`, `.chapterThumbText` | Seek-bar chapter preview | `styles/videoosd.scss` |
 | `.videoPlayerContainer`, `.videoPlayerContainer-onTop` | Player surface | `plugins/htmlVideoPlayer/style.scss` |
 | `.upNextDialog-countdownText`, `.upNextDialog-title`, `.upNextDialog-button` | Up-next prompt | `components/upnextdialog/upnextdialog.scss`, `themes/dark/theme.scss` |

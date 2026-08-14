@@ -26,7 +26,8 @@ is selected.
 not only `.cardImageContainer`. The translucent header gets a real backdrop blur
 (stock disables it). Desktop hover lifts the poster slightly (not `.cardBox` —
 that fights stock TV focus scale) and tints it gray. Detail-page hero
-art fades into the page; scrollbars are thin overlays.
+art fades into the page; scrollbars are thin overlays. Player seek/volume
+sliders use the accent — stock hardcodes `#00a4dc` on `.mdl-slider`.
 
 **Tuning**
 
