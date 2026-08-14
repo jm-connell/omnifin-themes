@@ -361,7 +361,7 @@ html:has(.itemDetailPage:not(.hide)) .backgroundContainer.withBackdrop {
 
 .headerTabs .emby-tab-button {
     color: var(--of-text-secondary, rgba(245, 245, 247, 0.78));
-    font-size: 0.95em;
+    font-size: 1.12em;
     font-weight: 600;
     letter-spacing: 0.02em;
     padding: 0.45em 0.85em 0.55em;
@@ -463,7 +463,7 @@ html:has(.itemDetailPage:not(.hide)) .backgroundContainer.withBackdrop {
 }
 
 .layout-tv .headerTabs .emby-tab-button {
-    font-size: 1.05em;
+    font-size: 1.22em;
     padding: 1.1em 1.4em;
     margin: 0;
 }
