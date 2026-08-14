@@ -7,15 +7,16 @@ Implementation notes for each theme. For installation, see the
 
 ## Omnifin Dark — `omnifin-dark.css`
 
-A neutral, low-chroma dark theme meant to be the everyday default. Nothing in it
-competes with poster artwork.
+A near-black theme meant to be the everyday default. Nothing in it competes
+with poster artwork.
 
-**Design intent.** Four charcoal surface steps from `#141418` to `#303038` carry
+**Design intent.** Four surface steps from `#08090c` to `#1e2028` carry
 elevation so panels read as layers rather than outlined boxes. Primary text is
 near-white (`#f5f5f7`); secondary stays at ~78% opacity so metadata remains
-readable. The accent appears only on interactive and stateful elements.
+readable. The ice-cyan accent (`#58e0fb`) appears only on interactive and
+stateful elements.
 
-**Typography.** Manrope for UI and titles (one geometric family). Header tabs
+**Typography.** Oxanium for UI and titles (one geometric family). Header tabs
 are sized up (~1.15em) with an accent underline on the active tab. Text colours
 are forced through stock `color: inherit !important` on cards and section
 titles so the theme stays readable even when Jellyfin’s built-in Light theme
@@ -23,15 +24,15 @@ is selected.
 
 **Beyond recolouring.** Posters round via `.cardPadder` (stock's visible shape),
 not only `.cardImageContainer`. The translucent header gets a real backdrop blur
-(stock disables it). Desktop hover deepens the card shadow without translating
-`.cardBox` (that fights stock TV focus scale). Detail-page hero art fades into
-the page; scrollbars are thin overlays.
+(stock disables it). Desktop hover lifts the poster slightly (not `.cardBox` —
+that fights stock TV focus scale) and tints it gray. Detail-page hero
+art fades into the page; scrollbars are thin overlays.
 
 **Tuning**
 
 | Property | Default | Notes |
 |---|---|---|
-| `--accent-color` | `#00a4dc` | Derivatives are computed with `color-mix()`. Engines without it keep the default blue derivatives. |
+| `--accent-color` | `#58e0fb` | Derivatives are computed with `color-mix()`. Engines without it keep the default cyan derivatives. |
 | `--corner-radius` | `0.75em` | `0px` gives a squared-off look. `em` units scale with `--ui-scale`. |
 | `--ui-scale` | `1` | Multiplies `html`, `.layout-tv` and `.layout-mobile` font sizes together, so Jellyfin's 20px TV floor is preserved. |
 

@@ -14,8 +14,8 @@ hard-refresh (`Ctrl+Shift+R`). `@import` must be the first line in the box.
 
 ### Omnifin Dark
 
-Refined neutral dark. Near-black surfaces, soft elevation, rounded posters,
-configurable accent. Tuning: accent, corner radius, UI scale.
+Refined near-black. Oxanium type, ice-cyan accent, rounded posters.
+Tuning: accent, corner radius, UI scale.
 [`themes/omnifin-dark.css`](themes/omnifin-dark.css)
 
 ```css
@@ -115,7 +115,7 @@ CSS below the `@import`.
 
 | Property | Default | What it does |
 |---|---|---|
-| `--accent-color` | `#00a4dc` | Buttons, focus rings, progress bars, selected library |
+| `--accent-color` | `#58e0fb` | Buttons, focus rings, progress bars, selected library |
 | `--corner-radius` | `0.75em` | Rounding on posters, cards, buttons, dialogs. `0px` for square |
 | `--ui-scale` | `1` | Scales the whole interface. `1.15` larger, `0.9` denser |
 
