@@ -3,7 +3,7 @@
     "name": "Omnifin Dark",
     "author": "omnifin",
     "description": "A refined, neutral dark theme. Readable charcoal surfaces, soft elevation, Manrope typography, rounded posters and a configurable accent colour.",
-    "version": "1.2.1",
+    "version": "1.2.5",
     "jellyfin": "10.10+",
     "tags": ["dark", "minimal", "modern", "mobile-friendly", "tv"],
     "previewUrl": "https://cdn.jsdelivr.net/gh/jm-connell/omnifin-themes@main/previews/omnifin-dark.png",

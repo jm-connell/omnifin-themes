@@ -4,7 +4,7 @@
  * soft elevation, visibly rounded posters and a configurable accent.
  *
  * Theme ID:   omnifin-dark
- * Version:    1.2.1
+ * Version:    1.2.5
  * Jellyfin:   10.10, 10.11 (verified against 10.11.11), 12.x (bridged)
  * Author:     omnifin
  * Source:     https://github.com/jm-connell/omnifin-themes
@@ -126,8 +126,19 @@ html {
     font-size: calc(125% * var(--of-scale, 1));
 }
 
+.layout-desktop {
+    /* Single-row header; used to pull page content up under the shorter bar. */
+    --of-header-offset: 3.4em;
+}
+
 .layout-mobile {
     font-size: calc(90% * var(--of-scale, 1));
+    --of-header-offset: 3.6em;
+}
+
+/* Tabs stay in a second row on mobile, so the page needs the extra offset. */
+html.layout-mobile body.withSectionTabs {
+    --of-header-offset: 5.6em;
 }
 
 html,
@@ -250,7 +261,24 @@ h3,
 
 .skinHeader {
     border-bottom: 1px solid var(--of-border, rgba(255, 255, 255, 0.1));
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Home (and TV) paint the Jellyfin wordmark/icon as a background-image
+   on these classes (stock dark theme.scss). Library titles stay on
+   .pageTitle without them. */
+.pageTitleWithLogo,
+.pageTitleWithDefaultLogo {
+    display: none;
+}
+
+.headerTop {
+    padding: 0.2em 0.7em;
+}
+
+/* Stock adds extra bottom padding under 100em so the tab row can sit
+   below the icons. We don't want that gap once the bar is compact. */
+.withSectionTabs .headerTop {
+    padding-bottom: 0.2em;
 }
 
 /* TV hardware cannot afford a live blur. Stock already clears the transparent
@@ -265,35 +293,178 @@ h3,
     -webkit-backdrop-filter: none !important;
 }
 
-/* Stock tabs inherit a tiny base size and sit at #999. Bump type and contrast. */
-.emby-tab-button {
+.layout-tv .headerTop {
+    padding: 0.54em 0;
+}
+
+/* Stock only overlays .headerTabs onto the icon row at 100em (1600px),
+   via margin-top: -4.3em. Do it for all desktop so Home is one row.
+   Absolute + translate is stabler than the stock negative margin now
+   that the wordmark is gone and headerTop is shorter. */
+.layout-desktop .headerTabs {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    width: auto;
+    max-width: calc(100% - 16em);
+    margin-top: 0;
+    overflow: hidden;
+    align-self: center;
+    justify-content: center;
+    transform: translate(-50%, -50%);
+}
+
+.layout-desktop .sectionTabs {
+    width: auto;
+}
+
+/* Stock: `.libraryPage { padding-top: 7em !important }` sized for the
+   two-row bar. Match !important and skip .itemDetailPage (hero is flush). */
+.layout-desktop .libraryPage:not(.itemDetailPage),
+.layout-mobile .libraryPage:not(.itemDetailPage),
+.layout-desktop .pageWithAbsoluteTabs:not(.noSecondaryNavPage),
+.layout-mobile .pageWithAbsoluteTabs:not(.noSecondaryNavPage),
+.layout-desktop .standalonePage,
+.layout-mobile .standalonePage {
+    padding-top: var(--of-header-offset, 3.4em) !important;
+}
+
+.layout-desktop .absolutePageTabContent,
+.layout-mobile .absolutePageTabContent {
+    top: var(--of-header-offset, 3.4em) !important;
+}
+
+.layout-desktop .dashboardDocument .mainDrawer-scrollContainer,
+.layout-mobile .dashboardDocument .mainDrawer-scrollContainer {
+    margin-top: var(--of-header-offset, 3.4em) !important;
+}
+
+/* Header tabs are view switches, not buttons — a chip fill is too heavy.
+   Scoped so Live TV date tabs keep stock sizing. */
+.headerTabs {
+    --of-tab-underline-inset: 0.7em;
+    --of-tab-underline-duration: 280ms;
+    --of-tab-underline-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.headerTabs .emby-tab-button {
     color: var(--of-text-secondary, rgba(245, 245, 247, 0.78));
-    font-size: 1.15em;
+    font-size: 0.95em;
     font-weight: 600;
     letter-spacing: 0.02em;
-    padding: 1.35em 1.6em;
+    padding: 0.45em 0.85em 0.55em;
+    margin: 0 0.1em;
+    background: transparent;
+    border-radius: 0;
     transition: color var(--of-transition, 180ms ease);
 }
 
-.emby-tab-button-active {
+.headerTabs .emby-tab-button-active {
     color: var(--of-text, #f5f5f7);
 }
 
-.emby-tab-button:hover,
-.emby-tab-button.show-focus:focus {
+.headerTabs .emby-tab-button:hover,
+.headerTabs .emby-tab-button.show-focus:focus {
     color: var(--of-text, #f5f5f7);
 }
 
-/* Accent underline for the active tab — reads clearly at a glance. */
-.emby-tab-button-active::after {
+/*
+ * Fallback underline: scale each tab's bar. Stock overflow: hidden on
+ * the button, so the bar has to sit inside the padding box. Engines
+ * without :has() stop here; the 2-tab slider below is an enhancement.
+ */
+.headerTabs .emby-tab-button::after {
     content: "";
     position: absolute;
-    right: 1.2em;
-    bottom: 0.55em;
-    left: 1.2em;
-    height: 0.15em;
+    right: var(--of-tab-underline-inset, 0.7em);
+    bottom: 0.15em;
+    left: var(--of-tab-underline-inset, 0.7em);
+    height: 0.12em;
     border-radius: 999px;
     background: var(--of-accent, #00a4dc);
+    transform: scaleX(0);
+    transition: transform var(--of-tab-underline-duration, 280ms) var(--of-tab-underline-ease, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.headerTabs .emby-tab-button-active::after {
+    transform: scaleX(1);
+}
+
+/* Grow/shrink toward the selected neighbour so it reads as a slide. */
+.headerTabs .emby-tab-button:has(~ .emby-tab-button-active)::after {
+    transform-origin: right center;
+}
+
+.headerTabs .emby-tab-button-active ~ .emby-tab-button::after {
+    transform-origin: left center;
+}
+
+.headerTabs .emby-tab-button:first-child.emby-tab-button-active::after {
+    transform-origin: right center;
+}
+
+.headerTabs .emby-tab-button:last-child.emby-tab-button-active::after {
+    transform-origin: left center;
+}
+
+/*
+ * Home is exactly two tabs. One bar on the slider can travel if the
+ * columns are equal; :has() detects that count. Library pages with
+ * more tabs keep the per-button fallback above.
+ */
+.headerTabs .emby-tabs-slider:has(> .emby-tab-button:nth-child(2)):not(:has(> .emby-tab-button:nth-child(3))) {
+    display: flex;
+}
+
+.headerTabs .emby-tabs-slider:has(> .emby-tab-button:nth-child(2)):not(:has(> .emby-tab-button:nth-child(3))) > .emby-tab-button {
+    flex: 1 0 7.5em;
+    text-align: center;
+}
+
+.headerTabs .emby-tabs-slider:has(> .emby-tab-button:nth-child(2)):not(:has(> .emby-tab-button:nth-child(3))) > .emby-tab-button::after {
+    content: none;
+}
+
+.headerTabs .emby-tabs-slider:has(> .emby-tab-button:nth-child(2)):not(:has(> .emby-tab-button:nth-child(3)))::after {
+    content: "";
+    position: absolute;
+    bottom: 0.15em;
+    left: var(--of-tab-underline-inset, 0.7em);
+    width: calc(50% - (2 * var(--of-tab-underline-inset, 0.7em)));
+    height: 0.12em;
+    border-radius: 999px;
+    background: var(--of-accent, #00a4dc);
+    transform: translateX(0);
+    transition: transform var(--of-tab-underline-duration, 280ms) var(--of-tab-underline-ease, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
+.headerTabs .emby-tabs-slider:has(> .emby-tab-button-active:nth-child(2)):not(:has(> .emby-tab-button:nth-child(3)))::after {
+    transform: translateX(calc(100% + (2 * var(--of-tab-underline-inset, 0.7em))));
+}
+
+[dir="rtl"] .headerTabs .emby-tabs-slider:has(> .emby-tab-button-active:nth-child(2)):not(:has(> .emby-tab-button:nth-child(3)))::after {
+    transform: translateX(calc(-100% - (2 * var(--of-tab-underline-inset, 0.7em))));
+}
+
+.layout-tv .headerTabs {
+    --of-tab-underline-inset: 1.2em;
+}
+
+.layout-tv .headerTabs .emby-tab-button {
+    font-size: 1.05em;
+    padding: 1.1em 1.4em;
+    margin: 0;
+}
+
+.layout-tv .headerTabs .emby-tab-button::after {
+    bottom: 0.45em;
+}
+
+.layout-desktop .headerTop .paper-icon-button-light,
+.layout-mobile .headerTop .paper-icon-button-light {
+    margin: 0 0.1em;
+    padding: 0.4em;
 }
 
 .headerButton,
@@ -316,10 +487,6 @@ h3,
 .guide-date-tab-button.show-focus:focus {
     background-color: var(--of-accent, #00a4dc);
     color: var(--of-text-on-accent, #ffffff);
-}
-
-.guide-date-tab-button.emby-tab-button-active::after {
-    display: none;
 }
 
 /* ==========================================================================
@@ -903,7 +1070,9 @@ h3,
     .emby-input,
     .emby-textarea,
     .cardBox:not(.visualCardBox) .cardPadder,
-    .visualCardBox {
+    .visualCardBox,
+    .headerTabs .emby-tab-button::after,
+    .headerTabs .emby-tabs-slider::after {
         transition: none;
     }
 }
